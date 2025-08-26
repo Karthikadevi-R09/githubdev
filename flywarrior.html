@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Warrior Endless Runner</title>
+    <link rel="stylesheet" href="flywarrior.css">
+</head>
+<body>
+            <div class="neumorphic neumorphic-card login-form" id="loginForm">
+                <h1 id="loginTitle">Login</h1>
+                <form id="loginFormInner" autocomplete="off">
+                    <div id="registerFields" class="register-fields">
+                        <div class="login-field">
+                            <label for="registerUsername">Username</label>
+                            <input type="text" class="neumorphic neumorphic-input" id="registerUsername" placeholder="Enter your username">
+                        </div>
+                    </div>
+                    <div class="login-field">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" class="neumorphic neumorphic-input" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="login-field">
+                        <label for="loginPass">Password</label>
+                        <input type="password" class="neumorphic neumorphic-input" id="loginPass" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="neumorphic neumorphic-button" id="loginBtn">Sign In</button>
+                </form>
+                                <div class="toggle-auth-container">
+                                    <span id="toggleAuth">New user? Register</span>
+                                </div>
+            </div>
+    <div class="game-container" id="homePage">
+        <div class="game-header">
+            <div class="score-panel">
+                <div class="score-item">
+                    <span class="icon">⚔️</span>
+                    <span>Score: <span id="score">0</span></span>
+                </div>
+                <div class="score-item">
+                    <span class="icon">🪙</span>
+                    <span>Coins: <span id="coins">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+            
+            <!-- Menu Screen -->
+            <div class="menu-screen" id="menuScreen">
+                <h1 class="game-title">ANCIENT WARRIOR</h1>
+                <p class="game-subtitle">Run, jump, and collect coins while avoiding bombs!</p>
+                <button class="start-btn" id="startBtn">
+                    <span class="btn-icon">▶</span>
+                    Start Game
+                </button>
+                <p class="controls-text">Press SPACE or ↑ to jump</p>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div class="game-over-screen hidden" id="gameOverScreen">
+                <h2 class="game-over-title">GAME OVER</h2>
+                <div class="final-scores">
+                    <p>Final Score: <span class="highlight" id="finalScore">0</span></p>
+                    <p>Coins Collected: <span class="highlight" id="finalCoins">0</span></p>
+                </div>
+                <div class="game-over-buttons">
+                    <button class="game-btn play-again-btn" id="playAgainBtn">
+                        <span class="btn-icon">▶</span>
+                        Play Again
+                    </button>
+                    <button class="game-btn menu-btn" id="menuBtn">
+                        <span class="btn-icon">↻</span>
+                        Main Menu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Fly Button -->
+            <button class="fly-btn hidden" id="flyBtn">FLY</button>
+        </div>
+
+        <div class="game-footer">
+            <p>Desktop: Use SPACE or ↑ arrow to fly | Mobile: Tap FLY button</p>
+        </div>
+    </div>
+
+        <script src="flywarrior.js"></script>
+        <script>
+            // Show login first, hide game
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('homePage').style.display = 'none';
+            let isRegister = false;
+            function showRegister(show) {
+                isRegister = show;
+                document.getElementById('registerFields').style.display = show ? 'block' : 'none';
+                document.getElementById('loginBtn').textContent = show ? 'Register' : 'Sign In';
+                document.getElementById('loginTitle').textContent = show ? 'Register' : 'Login';
+                document.getElementById('toggleAuth').textContent = show ? 'Already have an account? Login' : 'New user? Register';
+            }
+            document.getElementById('toggleAuth').onclick = function() {
+                showRegister(!isRegister);
+            };
+            document.getElementById('loginFormInner').onsubmit = function(e) {
+                e.preventDefault();
+                var email = document.getElementById('loginEmail').value.trim();
+                var pass = document.getElementById('loginPass').value.trim();
+                if(isRegister) {
+                    var username = document.getElementById('registerUsername').value.trim();
+                    if(!username || !email || !pass) {
+                        alert('Please fill all fields');
+                        return;
+                    }
+                    let users = JSON.parse(localStorage.getItem('flywarriorUsers') || '[]');
+                    if(users.find(u => u.email === email)) {
+                        alert('Email already registered. Please login.');
+                        return;
+                    }
+                    users.push({username,email,password:pass});
+                    localStorage.setItem('flywarriorUsers', JSON.stringify(users));
+                    alert('Registration successful! Please login.');
+                    showRegister(false);
+                    document.getElementById('loginFormInner').reset();
+                } else {
+                    if(!email || !pass) {
+                        alert('Please enter a valid email and password');
+                        return;
+                    }
+                    let users = JSON.parse(localStorage.getItem('flywarriorUsers') || '[]');
+                    let user = users.find(u => u.email === email && u.password === pass);
+                    if(user) {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('homePage').style.display = 'block';
+                    } else {
+                        alert('Invalid email or password.');
+                    }
+                }
+            };
+        </script>
+</body>
+</html>
+
+

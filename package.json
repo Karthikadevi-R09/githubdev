@@ -1,0 +1,16 @@
+{
+  "name": "ancient-warrior-game",
+  "version": "1.0.0",
+  "description": "Ancient Warrior endless runner game built with HTML, CSS, and JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000 --open=/index.html",
+    "start": "live-server --port=3000 --open=/index.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "keywords": ["game", "html5", "canvas", "javascript", "endless-runner"],
+  "author": "",
+  "license": "MIT"
+}
